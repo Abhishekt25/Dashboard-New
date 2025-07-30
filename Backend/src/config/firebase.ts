@@ -1,14 +1,24 @@
 import admin from 'firebase-admin';
 import path from 'path';
 
-// Adjust the path to your JSON key
-const serviceAccount = require(path.resolve(
-  __dirname,
-  '../reactdashboard-c967c-firebase-adminsdk-fbsvc-d6e49876bc.json'
-));
+// Get the current directory
+const currentDir = __dirname;
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+try {
+  const serviceAccount = require(path.join(
+    currentDir,
+    '../reactdashboard-c967c-firebase-adminsdk-fbsvc-d6e49876bc.json'
+  ));
 
-export const firestore = admin.firestore();
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://reactdashboard-c967c.firebaseio.com'
+  });
+} catch (error) {
+  console.error('Firebase initialization error:', error);
+  throw error; // Rethrow to prevent further execution
+}
+
+const firestore = admin.firestore();
+
+export { firestore };
